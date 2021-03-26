@@ -23,7 +23,7 @@ if(NOT stationaryorbit.core_FOUND)
             dependencies
             ..
         PATH_SUFFIXES
-            stationaryorbit-core
+            stationaryorbit.core
     )
     if(EXISTS "${stationaryorbit_core}/cmake/Findstationaryorbit.core.cmake")
         message("found Findstationaryorbit.core.cmake in ${stationaryorbit_core}/cmake")
@@ -41,7 +41,7 @@ if(NOT stationaryorbit.graphics-core_FOUND)
             dependencies
             ..
         PATH_SUFFIXES
-            stationaryorbit-core
+            stationaryorbit.graphics-core
     )
     if(EXISTS "${stationaryorbit_graphics_core}/cmake/Findstationaryorbit.graphics-core.cmake")
         message("found Findstationaryorbit.graphics-core.cmake in ${stationaryorbit_graphics_core}/cmake")
