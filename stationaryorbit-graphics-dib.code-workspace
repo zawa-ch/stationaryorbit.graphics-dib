@@ -1,0 +1,144 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+
+	"settings": {
+		"C_Cpp.default.intelliSenseMode": "clang-x64",
+		"C_Cpp.default.cppStandard": "c++17",
+		"C_Cpp.default.includePath": [
+			"${workspaceFolder}/include/**"
+		],
+		"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+	},
+
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"ms-vscode.cmake-tools"
+		]
+	},
+
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "build all",
+				"type": "shell",
+				"group": "build",
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"command": "cmake",
+				"linux": {
+					"args": [
+						"--build", "build/"
+					],
+					"problemMatcher": {
+						"owner": "cpp",
+						"base": "$gcc",
+						"fileLocation": "autoDetect"
+					}
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "silent",
+					"revealProblems": "onProblem",
+					"focus": false,
+					"panel": "shared",
+					"group": "build",
+					"showReuseMessage": false,
+					"clear": true
+				}
+			},
+			{
+				"label": "build stationaryorbit.graphics-dib",
+				"type": "shell",
+				"group": "build",
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"command": "cmake",
+				"linux": {
+					"args": [
+						"--build", "build/",
+						"--target", "stationaryorbit.graphics-dib"
+					],
+					"problemMatcher": {
+						"owner": "cpp",
+						"base": "$gcc",
+						"fileLocation": "autoDetect"
+					}
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "silent",
+					"revealProblems": "onProblem",
+					"focus": false,
+					"panel": "shared",
+					"group": "build",
+					"showReuseMessage": false,
+					"clear": true
+				}
+			},
+			{
+				"label": "build stationaryorbit.graphics-dib.test",
+				"type": "shell",
+				"group": "build",
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"command": "cmake",
+				"linux": {
+					"args": [
+						"--build", "build/",
+						"--target", "stationaryorbit.graphics-dib.test"
+					],
+					"problemMatcher": {
+						"owner": "cpp",
+						"base": "$gcc",
+						"fileLocation": "autoDetect"
+					}
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "silent",
+					"revealProblems": "onProblem",
+					"focus": false,
+					"panel": "shared",
+					"group": "build",
+					"showReuseMessage": false,
+					"clear": true
+				}
+			}
+		]
+	},
+
+	"launch": {
+		"configurations": [
+			{
+				"name": "(gdb) Launch stationaryorbit.graphics-dib.test",
+				"type": "cppdbg",
+				"request": "launch",
+				"program": "${workspaceFolder}/build/test/stationaryorbit.graphics-dib.test",
+				"args": [],
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder}/build/test/",
+				"environment": [],
+				"externalConsole": false,
+				"MIMode": "gdb",
+				"setupCommands": [
+					{
+						"description": "Enable pretty-printing for gdb",
+						"text": "-enable-pretty-printing",
+						"ignoreFailures": true
+					}
+				],
+				"preLaunchTask": "build stationaryorbit.graphics-dib.test"
+			}
+		],
+		"compounds": []
+	}
+}
