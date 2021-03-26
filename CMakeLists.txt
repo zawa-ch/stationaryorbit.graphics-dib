@@ -26,7 +26,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 # stationaryorbit.core の探索
-if(EXISTS "dependencies/stationaryorbit-core/CMakeLists.txt")
+if(TARGET stationaryorbit.core)
+    message("found stationaryorbit.core in parent project")
+    set(stationaryorbit_core_MODULE_NAME stationaryorbit.core)
+elseif(EXISTS "dependencies/stationaryorbit-core/CMakeLists.txt")
     message("found stationaryorbit.core in dependencies directory")
     add_subdirectory("dependencies/stationaryorbit-core")
     set(stationaryorbit_core_MODULE_NAME stationaryorbit.core)
@@ -47,7 +50,10 @@ else()
 endif()
 
 # stationaryorbit.graphics-core の探索
-if(EXISTS "dependencies/stationaryorbit-graphics-core/CMakeLists.txt")
+if(TARGET stationaryorbit.graphics-core)
+    message("found stationaryorbit.graphics-core in parent project")
+    set(stationaryorbit_core_MODULE_NAME stationaryorbit.graphics-core)
+elseif(EXISTS "dependencies/stationaryorbit-graphics-core/CMakeLists.txt")
     message("found stationaryorbit.graphics-core in dependencies directory")
     add_subdirectory("dependencies/stationaryorbit-graphics-core")
     set(stationaryorbit_graphics_core_MODULE_NAME stationaryorbit.graphics-core)
@@ -86,5 +92,17 @@ target_link_libraries(stationaryorbit.graphics-dib
     ${stationaryorbit_core_MODULE_NAME}
     ${stationaryorbit_graphics_core_MODULE_NAME}
 )
+set_target_properties(stationaryorbit.graphics-dib PROPERTIES INTERFACE_INCLUDE_DIRECTORIES $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
+install(TARGETS stationaryorbit.graphics-dib
+    EXPORT stationaryorbit.graphics-dib.export
+    LIBRARY DESTINATION lib
+    INCLUDES DESTINATION include
+)
+install(FILES ${HEADER_FILES} DESTINATION include/stationaryorbit)
+install(DIRECTORY ${HEADER_DIRECTORIES} DESTINATION include/stationaryorbit)
+install(EXPORT stationaryorbit.graphics-dib.export FILE stationaryorbit.graphics-dib-config.cmake DESTINATION share/cmake/stationaryorbit.graphics-dib/ EXPORT_LINK_INTERFACE_LIBRARIES)
 
 add_subdirectory(test)
+target_link_libraries(stationaryorbit.graphics-dib.test
+    stationaryorbit.graphics-dib
+)

@@ -20,6 +20,3 @@ add_executable(stationaryorbit.graphics-dib.test
     graphics-test.cpp
     dib.cpp
 )
-target_link_libraries(stationaryorbit.graphics-dib.test
-    stationaryorbit.graphics-dib
-)
