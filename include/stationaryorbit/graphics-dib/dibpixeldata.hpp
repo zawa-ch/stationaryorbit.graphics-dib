@@ -28,7 +28,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 	struct DIBPixelData final
 	{
 	private:
-		static constexpr size_t data_length = (size_t(Depth) / BitWidth<uint8_t>) + ((size_t(Depth) % BitWidth<uint8_t> != 0)?(1):(0));
+		static constexpr size_t data_length = (size_t(Depth) / bitwidth<uint8_t>) + ((size_t(Depth) % bitwidth<uint8_t> != 0)?(1):(0));
 	public:
 		typedef std::array<uint8_t, data_length> ValueType;
 		typedef EndianValueType<ValueType, Endians::little> DataType;
@@ -42,7 +42,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 			[](const uint32_t& v)
 			{
 				auto result = ValueType();
-				for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result[i] = (v >> (i * BitWidth<uint8_t>)) & 0xFF; }
+				for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result[i] = (v >> (i * bitwidth<uint8_t>)) & 0xFF; }
 				return result;
 			}(value)
 		)
@@ -55,7 +55,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		{
 			auto result = uint32_t();
 			auto v = _data.Value();
-			for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result |= v[i] << (i * BitWidth<uint8_t>); }
+			for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result |= v[i] << (i * bitwidth<uint8_t>); }
 			return result;
 		}
 	};
