@@ -49,12 +49,12 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		{}
 
 		[[nodiscard]] constexpr const DataType& Data() const { return _data; }
-		[[nodiscard]] constexpr ValueType Value() const { return _data.Value(); }
+		[[nodiscard]] constexpr ValueType Value() const { return _data.value(); }
 
 		constexpr explicit operator uint32_t() const
 		{
 			auto result = uint32_t();
-			auto v = _data.Value();
+			auto v = _data.value();
 			for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result |= v[i] << (i * bitwidth<uint8_t>); }
 			return result;
 		}
