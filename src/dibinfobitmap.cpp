@@ -1,5 +1,5 @@
 //	stationaryorbit.graphics-dib:/dibinfobitmap
-//	Copyright 2020 zawa-ch.
+//	Copyright 2020-2021 zawa-ch.
 //	GPLv3 (or later) license
 //
 //	This program is free software: you can redistribute it and/or modify
@@ -270,16 +270,16 @@ void DIBInfoBitmap::CopyTo(WritableImage<RGB8_t>& dest)
 }
 void DIBInfoBitmap::CopyTo(WritableImage<RGB8_t>& dest, const DisplayRectangle& area, const DisplayPoint& destorigin)
 {
-	if ((area.Left() < 0)||(area.Top() < 0)||(ihead.Width < area.Right())||(ihead.Height < area.Bottom())) { throw std::out_of_range("areaで指定された領域がビットマップの画像領域を超えています。"); }
+	if ((area.left() < 0)||(area.top() < 0)||(ihead.Width < area.right())||(ihead.Height < area.bottom())) { throw std::out_of_range("areaで指定された領域がビットマップの画像領域を超えています。"); }
 	switch(ihead.Compression)
 	{
 		case DIBCompressionMethod::RGB:
 		{
 			auto decoder = DIBRGBDecoder(loader, loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
-			for (decoder.JumpTo(DisplayPoint(area.Left(), area.Bottom())); decoder.HasValue(); decoder.Next())
+			for (decoder.JumpTo(DisplayPoint(area.left(), area.bottom())); decoder.HasValue(); decoder.Next())
 			{
-				if (area.Contains(decoder.CurrentPos())) { decoder.Next(ihead.Width - area.Width() - 1); continue; }
-				dest.At(decoder.CurrentPos() - area.Origin() + destorigin) = ConvertToRGB(decoder.Current());
+				if (area.contains(decoder.CurrentPos())) { decoder.Next(ihead.Width - area.width() - 1); continue; }
+				dest.At(decoder.CurrentPos() - area.origin() + destorigin) = ConvertToRGB(decoder.Current());
 			}
 			break;
 		}
@@ -302,7 +302,7 @@ DIBInfoBitmap::Pixmap DIBInfoBitmap::ToPixmap()
 }
 DIBInfoBitmap::Pixmap DIBInfoBitmap::ToPixmap(const DisplayRectangle& area)
 {
-	auto result = Pixmap(area.Size());
+	auto result = Pixmap(area.size());
 	CopyTo(result, area);
 	return result;
 }

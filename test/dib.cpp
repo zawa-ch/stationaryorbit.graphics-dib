@@ -256,8 +256,8 @@ void Crop()
 	auto alignedimage = ImageAlign(croppedimage);
 	// ヘッダの準備
 	auto whead = ihead;
-	whead.Width = rec.Width();
-	whead.Height = rec.Height();
+	whead.Width = rec.width();
+	whead.Height = rec.height();
 	whead.SizeImage = (((uint16_t(whead.BitCount) * whead.Width) + 31) / 32 * 4) * whead.Height;
 	// ファイルを開く
 	auto loader = DIB::DIBFileLoader(ofile, std::ios_base::out | std::ios_base::binary);
