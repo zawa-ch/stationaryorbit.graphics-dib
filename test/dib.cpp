@@ -1,5 +1,5 @@
 //	stationaryorbit.test.graphics:/dib
-//	Copyright 2020 zawa-ch.
+//	Copyright 2020-2021 zawa-ch.
 //	GPLv3 (or later) license
 //
 //	This program is free software: you can redistribute it and/or modify
@@ -207,8 +207,8 @@ void TurnR()
 	auto alignedimage = ImageAlign(turnedimage);
 	// ヘッダの準備
 	auto whead = ihead;
-	whead.Width = alignedimage.Size().Width();
-	whead.Height = alignedimage.Size().Height();
+	whead.Width = alignedimage.Size().width();
+	whead.Height = alignedimage.Size().height();
 	whead.Compression = DIB::DIBCompressionMethod::RGB;
 	whead.SizeImage = DIB::DIBRGBEncoder::GetImageLength(whead.BitCount, DisplayRectSize(whead.Width, whead.Height));
 	// ファイルを開く
@@ -225,8 +225,8 @@ void TurnL()
 	auto alignedimage = ImageAlign(turnedimage);
 	// ヘッダの準備
 	auto whead = ihead;
-	whead.Width = alignedimage.Size().Width();
-	whead.Height = alignedimage.Size().Height();
+	whead.Width = alignedimage.Size().width();
+	whead.Height = alignedimage.Size().height();
 	whead.Compression = DIB::DIBCompressionMethod::RGB;
 	whead.SizeImage = DIB::DIBRGBEncoder::GetImageLength(whead.BitCount, DisplayRectSize(whead.Width, whead.Height));
 	// ファイルを開く
@@ -250,7 +250,7 @@ void TurnI()
 void Crop()
 {
 	const char* ofile = "output_crop.bmp";
-	auto rec = DisplayRectangle(100, 100, image.Size().Width() - 200, image.Size().Height() - 200);
+	auto rec = DisplayRectangle(100, 100, image.Size().width() - 200, image.Size().height() - 200);
 	// 画像を切り抜き
 	auto croppedimage = ImageCropping(image, rec);
 	auto alignedimage = ImageAlign(croppedimage);
@@ -269,14 +269,14 @@ void Resize1()
 {
 	const char* ofile = "output_resize1.bmp";
 	const float resizefactor = 0.5f;
-	auto newsize = DisplayRectSizeF(image.Size().Width() * resizefactor, image.Size().Height() * resizefactor);
+	auto newsize = DisplayRectSizeF(image.Size().width() * resizefactor, image.Size().height() * resizefactor);
 	// 画像をリサイズ
 	auto clampedimage = ImageClamp(image);
 	auto resizedimage = ImageScaling<RGB8_t>(clampedimage, ImageInterpolation::Bilinear<RGB8_t>, resizefactor);
 	// ヘッダの準備
 	auto whead = ihead;
-	whead.Width = newsize.Width();
-	whead.Height = newsize.Height();
+	whead.Width = newsize.width();
+	whead.Height = newsize.height();
 	whead.SizeImage = (((uint16_t(whead.BitCount) * whead.Width) + 31) / 32 * 4) * whead.Height;
 	// ファイルを開く
 	auto loader = DIB::DIBFileLoader(ofile, std::ios_base::out | std::ios_base::binary);
@@ -288,14 +288,14 @@ void Resize2()
 {
 	const char* ofile = "output_resize2.bmp";
 	const float resizefactor = 2.0f;
-	auto newsize = DisplayRectSizeF(image.Size().Width() * resizefactor, image.Size().Height() * resizefactor);
+	auto newsize = DisplayRectSizeF(image.Size().width() * resizefactor, image.Size().height() * resizefactor);
 	// 画像をリサイズ
 	auto clampedimage = ImageClamp(image);
 	auto resizedimage = ImageScaling<RGB8_t>(clampedimage, ImageInterpolation::NearestNeighbor<RGB8_t>, resizefactor);
 	// ヘッダの準備
 	auto whead = ihead;
-	whead.Width = newsize.Width();
-	whead.Height = newsize.Height();
+	whead.Width = newsize.width();
+	whead.Height = newsize.height();
 	whead.SizeImage = (((uint16_t(whead.BitCount) * whead.Width) + 31) / 32 * 4) * whead.Height;
 	// ファイルを開く
 	auto loader = DIB::DIBFileLoader(ofile, std::ios_base::out | std::ios_base::binary);
