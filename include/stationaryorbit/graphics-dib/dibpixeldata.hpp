@@ -42,7 +42,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 			[](const uint32_t& v)
 			{
 				auto result = ValueType();
-				for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result[i] = (v >> (i * bitwidth<uint8_t>)) & 0xFF; }
+				for (auto i: Range<size_t>(0, data_length).get_std_iterator()) { result[i] = (v >> (i * bitwidth<uint8_t>)) & 0xFF; }
 				return result;
 			}(value)
 		)
@@ -55,7 +55,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		{
 			auto result = uint32_t();
 			auto v = _data.value();
-			for (auto i: Range<size_t>(0, data_length).GetStdIterator()) { result |= v[i] << (i * bitwidth<uint8_t>); }
+			for (auto i: Range<size_t>(0, data_length).get_std_iterator()) { result |= v[i] << (i * bitwidth<uint8_t>); }
 			return result;
 		}
 	};

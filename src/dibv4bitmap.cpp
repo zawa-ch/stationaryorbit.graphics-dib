@@ -72,7 +72,7 @@ std::vector<DIBV4Bitmap::ValueType> DIBV4Bitmap::GetPixel(const DisplayPoint& po
 			decoder.JumpTo(pos);
 			auto result = std::vector<DIBV4Bitmap::ValueType>();
 			result.reserve(count);
-			for (auto _: Range<size_t>(0, count).GetStdIterator()) { result.push_back(ConvertToRGB(decoder.Current())); }
+			for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRGB(decoder.Current())); }
 			return result;
 		}
 		case DIBCompressionMethod::RLE4:
@@ -167,7 +167,7 @@ std::vector<DIBV4Bitmap::RawDataType> DIBV4Bitmap::GetPixelRaw(const DisplayPoin
 			decoder.JumpTo(pos);
 			auto result = std::vector<RawDataType>();
 			result.reserve(count);
-			for (auto _: Range<size_t>(0, count).GetStdIterator()) { result.push_back(ConvertToRawData(decoder.Current())); }
+			for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRawData(decoder.Current())); }
 			return result;
 		}
 		case DIBCompressionMethod::RLE4:
@@ -311,7 +311,7 @@ std::optional<DIBV4Bitmap> DIBV4Bitmap::Generate(DIBLoader&& loader, const DIBV4
 			DIBLoaderHelper::Write(loader, fhead, 0);
 			DIBLoaderHelper::Write(loader, DIBV4Header::Size, sizeof(DIBFileHeader));
 			DIBLoaderHelper::Write(loader, header, sizeof(DIBFileHeader) + sizeof(uint32_t));
-			for (auto i: Range<size_t>(0, palsize).GetStdIterator())
+			for (auto i: Range<size_t>(0, palsize).get_std_iterator())
 			{
 				if (palette.size() < i) { DIBLoaderHelper::Write(loader, RGBQuad_t(palette[i]), sizeof(DIBFileHeader) + DIBV4Header::Size + (sizeof(RGBQuad_t) * i)); }
 				else { DIBLoaderHelper::Write(loader, RGBQuad_t(), sizeof(DIBFileHeader) + DIBV4Header::Size + (sizeof(RGBQuad_t) * i)); }

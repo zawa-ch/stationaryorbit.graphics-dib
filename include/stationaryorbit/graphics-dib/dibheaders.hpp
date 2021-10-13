@@ -156,25 +156,25 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		[[nodiscard]] constexpr int32_t FileSize() const
 		{
 			auto result = int32_t();
-			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).GetStdIterator()) { ((uint16_t*)&result)[i] = (&FileSize_L)[i]; }
+			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).get_std_iterator()) { ((uint16_t*)&result)[i] = (&FileSize_L)[i]; }
 			return result;
 		}
 		///	ファイルサイズを設定します。
 		constexpr void FileSize(int32_t value)
 		{
-			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).GetStdIterator()) { (&FileSize_L)[i] = ((uint16_t*)&value)[i]; }
+			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).get_std_iterator()) { (&FileSize_L)[i] = ((uint16_t*)&value)[i]; }
 		}
 		///	ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセットを取得します。
 		[[nodiscard]] constexpr int32_t Offset() const
 		{
 			auto result = int32_t();
-			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).GetStdIterator()) { ((uint16_t*)&result)[i] = (&Offset_L)[i]; }
+			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).get_std_iterator()) { ((uint16_t*)&result)[i] = (&Offset_L)[i]; }
 			return result;
 		}
 		///	ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセットを設定します。
 		constexpr void Offset(int32_t value)
 		{
-			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).GetStdIterator()) { (&Offset_L)[i] = ((uint16_t*)&value)[i]; }
+			for (auto i: Range<size_t>(0, sizeof(int32_t)/sizeof(uint16_t)).get_std_iterator()) { (&Offset_L)[i] = ((uint16_t*)&value)[i]; }
 		}
 		///	BitmapFileHeader構造体の内容を確認し、正しいフォーマットであることをチェックします
 		[[nodiscard]] constexpr bool CheckFileHeader() const

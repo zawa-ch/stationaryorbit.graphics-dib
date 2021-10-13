@@ -164,7 +164,7 @@ void DIBCoreBitmapEncoder::Write(const ValueType& value)
 	{
 		size_t ci = size.width() * ((uint16_t(bitdepth) + 7) / 8);
 		size_t stride = (((size.width() * uint16_t(bitdepth)) + 31) % 32) / 8;
-		for (auto i: Range<size_t>(ci, stride).GetStdIterator()) { DIBLoaderHelper::Write(loader, char(), offset + i); }
+		for (auto i: Range<size_t>(ci, stride).get_std_iterator()) { DIBLoaderHelper::Write(loader, char(), offset + i); }
 	}
 	++current;
 }
@@ -236,7 +236,7 @@ std::vector<DIBCoreBitmap::ValueType> DIBCoreBitmap::GetPixel(const DisplayPoint
 	decoder.JumpTo(pos);
 	auto result = std::vector<DIBCoreBitmap::ValueType>();
 	result.reserve(count);
-	for (auto _: Range<size_t>(0, count).GetStdIterator()) { result.push_back(ConvertToRGB(decoder.Current())); }
+	for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRGB(decoder.Current())); }
 	return result;
 }
 void DIBCoreBitmap::SetPixel(const DisplayPoint& pos, const ValueType& value)
@@ -263,7 +263,7 @@ std::vector<DIBCoreBitmap::RawDataType> DIBCoreBitmap::GetPixelRaw(const Display
 	decoder.JumpTo(pos);
 	auto result = std::vector<RawDataType>();
 	result.reserve(count);
-	for (auto _: Range<size_t>(0, count).GetStdIterator()) { result.push_back(ConvertToRawData(decoder.Current())); }
+	for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRawData(decoder.Current())); }
 	return result;
 }
 void DIBCoreBitmap::SetPixelRaw(const DisplayPoint& pos, const RawDataType& value)
@@ -324,7 +324,7 @@ std::optional<DIBCoreBitmap> DIBCoreBitmap::Generate(DIBLoader&& loader, const D
 	DIBLoaderHelper::Write(loader, fhead, 0);
 	DIBLoaderHelper::Write(loader, DIBCoreHeader::Size, sizeof(DIBFileHeader));
 	DIBLoaderHelper::Write(loader, header, sizeof(DIBFileHeader) + sizeof(uint32_t));
-	for (auto i: Range<size_t>(0, palsize).GetStdIterator())
+	for (auto i: Range<size_t>(0, palsize).get_std_iterator())
 	{
 		if (palette.size() < i) { DIBLoaderHelper::Write(loader, RGBTriple_t(palette[i]), sizeof(DIBFileHeader) + DIBCoreHeader::Size + (sizeof(RGBTriple_t) * i)); }
 		else { DIBLoaderHelper::Write(loader, RGBTriple_t(), sizeof(DIBFileHeader) + DIBCoreHeader::Size + (sizeof(RGBTriple_t) * i)); }

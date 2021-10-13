@@ -179,7 +179,7 @@ void DIBRGBEncoder::Write(const ValueType& value)
 	if (CurrentPos().x() == (size.width() - 1))
 	{
 		size_t ci = size.width() * pixellength;
-		for (auto i: Range<size_t>(ci, stridelength).GetStdIterator()) { DIBLoaderHelper::Write(loader, char(), offset + i); }
+		for (auto i: Range<size_t>(ci, stridelength).get_std_iterator()) { DIBLoaderHelper::Write(loader, char(), offset + i); }
 	}
 	++current;
 }
