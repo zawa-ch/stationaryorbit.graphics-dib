@@ -49,7 +49,7 @@ DIBV5Bitmap::ValueType DIBV5Bitmap::GetPixel(const DisplayPoint& pos)
 		{
 			auto decoder = DIBRGBDecoder(loader, loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
 			decoder.JumpTo(pos);
-			return ConvertToRGB(decoder.Current());
+			return ConvertToRGB(decoder.current());
 			break;
 		}
 		case DIBCompressionMethod::RLE4:
@@ -73,7 +73,7 @@ std::vector<DIBV5Bitmap::ValueType> DIBV5Bitmap::GetPixel(const DisplayPoint& po
 			decoder.JumpTo(pos);
 			auto result = std::vector<DIBV5Bitmap::ValueType>();
 			result.reserve(count);
-			for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRGB(decoder.Current())); }
+			for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRGB(decoder.current())); }
 			return result;
 		}
 		case DIBCompressionMethod::RLE4:
@@ -145,7 +145,7 @@ DIBV5Bitmap::RawDataType DIBV5Bitmap::GetPixelRaw(const DisplayPoint& pos)
 		{
 			auto decoder = DIBRGBDecoder(loader, loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
 			decoder.JumpTo(pos);
-			return ConvertToRawData(decoder.Current());
+			return ConvertToRawData(decoder.current());
 		}
 		case DIBCompressionMethod::RLE4:
 		case DIBCompressionMethod::RLE8:
@@ -168,7 +168,7 @@ std::vector<DIBV5Bitmap::RawDataType> DIBV5Bitmap::GetPixelRaw(const DisplayPoin
 			decoder.JumpTo(pos);
 			auto result = std::vector<RawDataType>();
 			result.reserve(count);
-			for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRawData(decoder.Current())); }
+			for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRawData(decoder.current())); }
 			return result;
 		}
 		case DIBCompressionMethod::RLE4:
@@ -227,7 +227,7 @@ void DIBV5Bitmap::CopyTo(WritableImage<RGB8_t>& dest)
 		case DIBCompressionMethod::RGB:
 		{
 			auto decoder = DIBRGBDecoder(loader, loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
-			for (decoder.Reset(); decoder.HasValue(); decoder.Next()) { dest.At(decoder.CurrentPos()) = ConvertToRGB(decoder.Current()); }
+			for (decoder.Reset(); decoder.has_value(); decoder.next()) { dest.At(decoder.CurrentPos()) = ConvertToRGB(decoder.current()); }
 			break;
 		}
 		case DIBCompressionMethod::RLE4:
@@ -249,10 +249,10 @@ void DIBV5Bitmap::CopyTo(WritableImage<RGB8_t>& dest, const DisplayRectangle& ar
 		case DIBCompressionMethod::RGB:
 		{
 			auto decoder = DIBRGBDecoder(loader, loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
-			for (decoder.JumpTo(DisplayPoint(area.left(), area.bottom())); decoder.HasValue(); decoder.Next())
+			for (decoder.JumpTo(DisplayPoint(area.left(), area.bottom())); decoder.has_value(); decoder.next())
 			{
-				if (area.contains(decoder.CurrentPos())) { decoder.Next(ihead.Width - area.width() - 1); continue; }
-				dest.At(decoder.CurrentPos() - area.origin() + destorigin) = ConvertToRGB(decoder.Current());
+				if (area.contains(decoder.CurrentPos())) { decoder.next(ihead.Width - area.width() - 1); continue; }
+				dest.At(decoder.CurrentPos() - area.origin() + destorigin) = ConvertToRGB(decoder.current());
 			}
 			break;
 		}

@@ -25,42 +25,42 @@ DIBRGBDecoder::DIBRGBDecoder(DIBLoader& loader, size_t offset, DIBBitDepth bitde
 {
 	Reset();
 }
-bool DIBRGBDecoder::Next()
+bool DIBRGBDecoder::next()
 {
 	if (IsAfterEnd()) { return false; }
-	++current;
-	if (IsAfterEnd()) { current = length; return false; }
-	current_value = Get(current);
+	++current_p;
+	if (IsAfterEnd()) { current_p = length; return false; }
+	current_value = Get(current_p);
 	return true;
 }
-bool DIBRGBDecoder::Next(const IteratorTraits::IteratorDiff_t& count)
+bool DIBRGBDecoder::next(const IteratorTraits::IteratorDiff& count)
 {
 	if (IsAfterEnd()) { return false; }
-	current += count;
-	if (IsAfterEnd()) { current = length; return false; }
-	current_value = Get(current);
+	current_p += count;
+	if (IsAfterEnd()) { current_p = length; return false; }
+	current_value = Get(current_p);
 	return true;
 }
 bool DIBRGBDecoder::Previous()
 {
 	if (IsBeforeBegin()) { return false; }
-	--current;
-	if (IsBeforeBegin()) { current = -1; return false; }
-	current_value = Get(current);
+	--current_p;
+	if (IsBeforeBegin()) { current_p = -1; return false; }
+	current_value = Get(current_p);
 	return true;
 }
-bool DIBRGBDecoder::Previous(const IteratorTraits::IteratorDiff_t& count)
+bool DIBRGBDecoder::Previous(const IteratorTraits::IteratorDiff& count)
 {
 	if (IsBeforeBegin()) { return false; }
-	current -= count;
-	if (IsBeforeBegin()) { current = -1; return false; }
-	current_value = Get(current);
+	current_p -= count;
+	if (IsBeforeBegin()) { current_p = -1; return false; }
+	current_value = Get(current_p);
 	return true;
 }
 void DIBRGBDecoder::JumpTo(const DisplayPoint& pos)
 {
 	if ( (pos.x() < 0)||(pos.y() < 0) ) { throw std::invalid_argument("posに指定されている座標が無効です。"); }
-	current = ResolveIndex(pos);
+	current_p = ResolveIndex(pos);
 	current_value = Get(ResolveIndex(pos));
 }
 void DIBRGBDecoder::Reset() { Reset(IteratorOrigin::Begin); }
@@ -69,19 +69,19 @@ void DIBRGBDecoder::Reset(const IteratorOrigin& origin)
 	switch(origin)
 	{
 		default:
-		case IteratorOrigin::Begin: { current = 0; break; }
-		case IteratorOrigin::End: { current = length - 1; break; }
+		case IteratorOrigin::Begin: { current_p = 0; break; }
+		case IteratorOrigin::End: { current_p = length - 1; break; }
 	}
-	current_value = Get(current);
+	current_value = Get(current_p);
 }
-bool DIBRGBDecoder::HasValue() const { return (0 <= current)&&(current < length); }
-bool DIBRGBDecoder::IsBeforeBegin() const { return current < 0; }
-bool DIBRGBDecoder::IsAfterEnd() const { return length <= current; }
-Graphics::DisplayPoint DIBRGBDecoder::CurrentPos() const { return ResolvePos(current); }
-DIBRGBDecoder::ValueType DIBRGBDecoder::Current() const { if (HasValue()) { return current_value; } else { throw InvalidOperationException("このイテレータは領域の範囲外を指しています。"); } }
+bool DIBRGBDecoder::has_value() const { return (0 <= current_p)&&(current_p < length); }
+bool DIBRGBDecoder::IsBeforeBegin() const { return current_p < 0; }
+bool DIBRGBDecoder::IsAfterEnd() const { return length <= current_p; }
+Graphics::DisplayPoint DIBRGBDecoder::CurrentPos() const { return ResolvePos(current_p); }
+DIBRGBDecoder::ValueType DIBRGBDecoder::current() const { if (has_value()) { return current_value; } else { throw InvalidOperationException("このイテレータは領域の範囲外を指しています。"); } }
 void DIBRGBDecoder::Write(const ValueType& value)
 {
-	size_t tgt = offset + ResolveOffset(current);
+	size_t tgt = offset + ResolveOffset(current_p);
 	switch(bitdepth)
 	{
 		case DIBBitDepth::Bit1: { DIBLoaderHelper::Write(loader, std::get<DIBPixelData<DIBBitDepth::Bit1>>(value), tgt); break; }
@@ -94,12 +94,12 @@ void DIBRGBDecoder::Write(const ValueType& value)
 	}
 	current_value = value;
 }
-IteratorTraits::IteratorDiff_t DIBRGBDecoder::Distance(const DIBRGBDecoder& other) const { return current - other.current; }
-bool DIBRGBDecoder::Equals(const DIBRGBDecoder& other) const { return current == other.current; }
+IteratorTraits::IteratorDiff DIBRGBDecoder::Distance(const DIBRGBDecoder& other) const { return current_p - other.current_p; }
+bool DIBRGBDecoder::equals(const DIBRGBDecoder& other) const { return current_p == other.current_p; }
 int DIBRGBDecoder::Compare(const DIBRGBDecoder& other) const
 {
-	if (current == other.current) { return 0; }
-	else if (other.current < current) { return 1; }
+	if (current_p == other.current_p) { return 0; }
+	else if (other.current_p < current_p) { return 1; }
 	else { return -1; }
 }
 DIBRGBDecoder::ValueType DIBRGBDecoder::Get(size_t index)

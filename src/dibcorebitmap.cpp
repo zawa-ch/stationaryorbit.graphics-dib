@@ -25,42 +25,42 @@ DIBCoreBitmapDecoder::DIBCoreBitmapDecoder(DIBLoader& loader, size_t offset, DIB
 {
 	Reset();
 }
-bool DIBCoreBitmapDecoder::Next()
+bool DIBCoreBitmapDecoder::next()
 {
 	if (IsAfterEnd()) { return false; }
-	++current;
-	if (IsAfterEnd()) { current = length; return false; }
-	current_value = Get(current);
+	++current_p;
+	if (IsAfterEnd()) { current_p = length; return false; }
+	current_value = Get(current_p);
 	return true;
 }
-bool DIBCoreBitmapDecoder::Next(const IteratorTraits::IteratorDiff_t& count)
+bool DIBCoreBitmapDecoder::next(const IteratorTraits::IteratorDiff& count)
 {
 	if (IsAfterEnd()) { return false; }
-	current += count;
-	if (IsAfterEnd()) { current = length; return false; }
-	current_value = Get(current);
+	current_p += count;
+	if (IsAfterEnd()) { current_p = length; return false; }
+	current_value = Get(current_p);
 	return true;
 }
 bool DIBCoreBitmapDecoder::Previous()
 {
 	if (IsBeforeBegin()) { return false; }
-	--current;
-	if (IsBeforeBegin()) { current = -1; return false; }
-	current_value = Get(current);
+	--current_p;
+	if (IsBeforeBegin()) { current_p = -1; return false; }
+	current_value = Get(current_p);
 	return true;
 }
-bool DIBCoreBitmapDecoder::Previous(const IteratorTraits::IteratorDiff_t& count)
+bool DIBCoreBitmapDecoder::Previous(const IteratorTraits::IteratorDiff& count)
 {
 	if (IsBeforeBegin()) { return false; }
-	current -= count;
-	if (IsBeforeBegin()) { current = -1; return false; }
-	current_value = Get(current);
+	current_p -= count;
+	if (IsBeforeBegin()) { current_p = -1; return false; }
+	current_value = Get(current_p);
 	return true;
 }
 void DIBCoreBitmapDecoder::JumpTo(const DisplayPoint& pos)
 {
 	if ( (pos.x() < 0)||(pos.y() < 0) ) { throw std::invalid_argument("posに指定されている座標が無効です。"); }
-	current = ResolveIndex(pos);
+	current_p = ResolveIndex(pos);
 	current_value = Get(ResolveIndex(pos));
 }
 void DIBCoreBitmapDecoder::Reset() { Reset(IteratorOrigin::Begin); }
@@ -69,19 +69,19 @@ void DIBCoreBitmapDecoder::Reset(const IteratorOrigin& origin)
 	switch(origin)
 	{
 		default:
-		case IteratorOrigin::Begin: { current = 0; break; }
-		case IteratorOrigin::End: { current = length - 1; break; }
+		case IteratorOrigin::Begin: { current_p = 0; break; }
+		case IteratorOrigin::End: { current_p = length - 1; break; }
 	}
-	current_value = Get(current);
+	current_value = Get(current_p);
 }
-bool DIBCoreBitmapDecoder::HasValue() const { return (0 <= current)&&(current < length); }
-bool DIBCoreBitmapDecoder::IsBeforeBegin() const { return current < 0; }
-bool DIBCoreBitmapDecoder::IsAfterEnd() const { return length <= current; }
-Graphics::DisplayPoint DIBCoreBitmapDecoder::CurrentPos() const { return ResolvePos(current); }
-DIBCoreBitmapDecoder::ValueType DIBCoreBitmapDecoder::Current() const { if (HasValue()) { return current_value; } else { throw InvalidOperationException("このイテレータは領域の範囲外を指しています。"); } }
+bool DIBCoreBitmapDecoder::has_value() const { return (0 <= current_p)&&(current_p < length); }
+bool DIBCoreBitmapDecoder::IsBeforeBegin() const { return current_p < 0; }
+bool DIBCoreBitmapDecoder::IsAfterEnd() const { return length <= current_p; }
+Graphics::DisplayPoint DIBCoreBitmapDecoder::CurrentPos() const { return ResolvePos(current_p); }
+DIBCoreBitmapDecoder::ValueType DIBCoreBitmapDecoder::current() const { if (has_value()) { return current_value; } else { throw InvalidOperationException("このイテレータは領域の範囲外を指しています。"); } }
 void DIBCoreBitmapDecoder::Write(const ValueType& value)
 {
-	size_t tgt = offset + ResolveOffset(current);
+	size_t tgt = offset + ResolveOffset(current_p);
 	switch(bitdepth)
 	{
 		case DIBBitDepth::Bit1: { DIBLoaderHelper::Write(loader, std::get<DIBPixelData<DIBBitDepth::Bit1>>(value), tgt); break; }
@@ -92,12 +92,12 @@ void DIBCoreBitmapDecoder::Write(const ValueType& value)
 	}
 	current_value = value;
 }
-IteratorTraits::IteratorDiff_t DIBCoreBitmapDecoder::Distance(const DIBCoreBitmapDecoder& other) const { return current - other.current; }
-bool DIBCoreBitmapDecoder::Equals(const DIBCoreBitmapDecoder& other) const { return current == other.current; }
+IteratorTraits::IteratorDiff DIBCoreBitmapDecoder::Distance(const DIBCoreBitmapDecoder& other) const { return current_p - other.current_p; }
+bool DIBCoreBitmapDecoder::equals(const DIBCoreBitmapDecoder& other) const { return current_p == other.current_p; }
 int DIBCoreBitmapDecoder::Compare(const DIBCoreBitmapDecoder& other) const
 {
-	if (current == other.current) { return 0; }
-	else if (other.current < current) { return 1; }
+	if (current_p == other.current_p) { return 0; }
+	else if (other.current_p < current_p) { return 1; }
 	else { return -1; }
 }
 DIBCoreBitmapDecoder::ValueType DIBCoreBitmapDecoder::Get(size_t index)
@@ -228,7 +228,7 @@ DIBCoreBitmap::ValueType DIBCoreBitmap::GetPixel(const DisplayPoint& pos)
 {
 	auto decoder = DIBCoreBitmapDecoder(loader, sizeof(DIBFileHeader) + loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
 	decoder.JumpTo(pos);
-	return ConvertToRGB(decoder.Current());
+	return ConvertToRGB(decoder.current());
 }
 std::vector<DIBCoreBitmap::ValueType> DIBCoreBitmap::GetPixel(const DisplayPoint& pos, size_t count)
 {
@@ -236,7 +236,7 @@ std::vector<DIBCoreBitmap::ValueType> DIBCoreBitmap::GetPixel(const DisplayPoint
 	decoder.JumpTo(pos);
 	auto result = std::vector<DIBCoreBitmap::ValueType>();
 	result.reserve(count);
-	for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRGB(decoder.Current())); }
+	for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRGB(decoder.current())); }
 	return result;
 }
 void DIBCoreBitmap::SetPixel(const DisplayPoint& pos, const ValueType& value)
@@ -255,7 +255,7 @@ DIBCoreBitmap::RawDataType DIBCoreBitmap::GetPixelRaw(const DisplayPoint& pos)
 {
 	auto decoder = DIBCoreBitmapDecoder(loader, sizeof(DIBFileHeader) + loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
 	decoder.JumpTo(pos);
-	return ConvertToRawData(decoder.Current());
+	return ConvertToRawData(decoder.current());
 }
 std::vector<DIBCoreBitmap::RawDataType> DIBCoreBitmap::GetPixelRaw(const DisplayPoint& pos, size_t count)
 {
@@ -263,7 +263,7 @@ std::vector<DIBCoreBitmap::RawDataType> DIBCoreBitmap::GetPixelRaw(const Display
 	decoder.JumpTo(pos);
 	auto result = std::vector<RawDataType>();
 	result.reserve(count);
-	for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRawData(decoder.Current())); }
+	for (auto _: Range<size_t>(0, count).get_std_iterator()) { result.push_back(ConvertToRawData(decoder.current())); }
 	return result;
 }
 void DIBCoreBitmap::SetPixelRaw(const DisplayPoint& pos, const RawDataType& value)
@@ -281,16 +281,16 @@ void DIBCoreBitmap::SetPixelRaw(const DisplayPoint& pos, const std::vector<RawDa
 void DIBCoreBitmap::CopyTo(WritableImage<RGB8_t>& dest)
 {
 	auto decoder = DIBCoreBitmapDecoder(loader, sizeof(DIBFileHeader) + loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
-	for (decoder.Reset(); decoder.HasValue(); decoder.Next()) { dest.At(decoder.CurrentPos()) = ConvertToRGB(decoder.Current()); }
+	for (decoder.Reset(); decoder.has_value(); decoder.next()) { dest.At(decoder.CurrentPos()) = ConvertToRGB(decoder.current()); }
 }
 void DIBCoreBitmap::CopyTo(WritableImage<RGB8_t>& dest, const DisplayRectangle& area, const DisplayPoint& destorigin)
 {
 	if ((area.left() < 0)||(area.top() < 0)||(ihead.Width < area.right())||(ihead.Height < area.bottom())) { throw std::out_of_range("areaで指定された領域がビットマップの画像領域を超えています。"); }
 	auto decoder = DIBCoreBitmapDecoder(loader, sizeof(DIBFileHeader) + loader.FileHead().Offset(), ihead.BitCount, DisplayRectSize(ihead.Width, ihead.Height));
-	for (decoder.JumpTo(DisplayPoint(area.left(), area.bottom())); decoder.HasValue(); decoder.Next())
+	for (decoder.JumpTo(DisplayPoint(area.left(), area.bottom())); decoder.has_value(); decoder.next())
 	{
-		if (area.contains(decoder.CurrentPos())) { decoder.Next(ihead.Width - area.width() - 1); continue; }
-		dest.At(decoder.CurrentPos() - area.origin() + destorigin) = ConvertToRGB(decoder.Current());
+		if (area.contains(decoder.CurrentPos())) { decoder.next(ihead.Width - area.width() - 1); continue; }
+		dest.At(decoder.CurrentPos() - area.origin() + destorigin) = ConvertToRGB(decoder.current());
 	}
 }
 DIBCoreBitmap::Pixmap DIBCoreBitmap::ToPixmap()

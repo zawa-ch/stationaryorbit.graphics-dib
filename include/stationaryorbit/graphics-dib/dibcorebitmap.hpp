@@ -39,7 +39,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		///	全体の要素数。
 		int64_t length;
 		///	現在の読み込み位置。
-		int64_t current;
+		int64_t current_p;
 		///	現在の値。
 		ValueType current_value;
 		///	各ピクセルのデータ長。
@@ -53,13 +53,13 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		virtual ~DIBCoreBitmapDecoder() = default;
 
 		///	現在の位置を次に進めます。
-		bool Next();
+		bool next();
 		///	現在の位置を指定された数だけ次に進めます。
-		bool Next(const IteratorTraits::IteratorDiff_t& count);
+		bool next(const IteratorTraits::IteratorDiff& count);
 		///	現在の位置を前に戻します。
 		bool Previous();
 		///	現在の位置を指定された数だけ前に戻します。
-		bool Previous(const IteratorTraits::IteratorDiff_t& count);
+		bool Previous(const IteratorTraits::IteratorDiff& count);
 		///	画像の任意の位置にジャンプします。
 		void JumpTo(const DisplayPoint& pos);
 		///	現在の位置を初期位置に戻します。
@@ -67,7 +67,7 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		///	現在の位置を初期位置に戻します。
 		void Reset(const IteratorOrigin& origin);
 		///	現在の位置が値を持っているかを取得します。
-		[[nodiscard]] bool HasValue() const;
+		[[nodiscard]] bool has_value() const;
 		///	現在の位置が最初の要素よりも前にいるかを取得します。
 		[[nodiscard]] bool IsBeforeBegin() const;
 		///	現在の位置が最後の要素よりも後にいるかを取得します。
@@ -75,12 +75,12 @@ namespace zawa_ch::StationaryOrbit::Graphics::DIB
 		///	現在の位置を画像上での位置で取得します。
 		[[nodiscard]] DisplayPoint CurrentPos() const;
 		///	現在の位置にあるオブジェクトを取得します。
-		[[nodiscard]] ValueType Current() const;
+		[[nodiscard]] ValueType current() const;
 		///	現在の位置にオブジェクトを書き込みます。
 		void Write(const ValueType& value);
 		///	指定されたオブジェクトとの距離を取得します。
-		[[nodiscard]] IteratorTraits::IteratorDiff_t Distance(const DIBCoreBitmapDecoder& other) const;
-		[[nodiscard]] bool Equals(const DIBCoreBitmapDecoder& other) const;
+		[[nodiscard]] IteratorTraits::IteratorDiff Distance(const DIBCoreBitmapDecoder& other) const;
+		[[nodiscard]] bool equals(const DIBCoreBitmapDecoder& other) const;
 		[[nodiscard]] int Compare(const DIBCoreBitmapDecoder& other) const;
 	private:
 		[[nodiscard]] ValueType Get(size_t index);
